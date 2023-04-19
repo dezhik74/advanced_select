@@ -1,11 +1,3 @@
-const sertPickerList = document.querySelectorAll(".cert-card")
-const okButtonEl = document.querySelector('#okButton')
-const cancelButtonEl = document.querySelector('#cancelButton')
-const crossButtonEl = document.querySelector('#crossButton')
-const modalEl =document.querySelector('#modal')
-const modalDialogEl = document.querySelector("#modal-dialog")
-const modalBody = document.querySelector("#modal-body")
-
 function removeAllModalListeners() {
   // $('#modalCancelButton').off('click', cancelModal)
   // $('#modalCrossButton').off('click', cancelModal)
@@ -14,12 +6,16 @@ function removeAllModalListeners() {
 
 function cancelModal() {
   console.log('modal cancel')
-  removeAllModalListeners()
+  // removeAllModalListeners()
 }
+
+$('#myModal').on('hidden.bs.modal', function (e) {
+  okModal()
+})
 
 function okModal() {
   console.log('modal ok')
-  removeAllModalListeners()
+  // removeAllModalListeners()
   
 }
 // console.log($('.cert-card'))
