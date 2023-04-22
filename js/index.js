@@ -1,12 +1,5 @@
 function removeAllModalListeners() {
-  // $('#modalCancelButton').off('click', cancelModal)
-  // $('#modalCrossButton').off('click', cancelModal)
   $('#modalOkButton').off('click', okModal)
-}
-
-function cancelModal() {
-  console.log('modal cancel')
-  // removeAllModalListeners()
 }
 
 $('#myModal').on('hidden.bs.modal', function (e) {
@@ -14,8 +7,29 @@ $('#myModal').on('hidden.bs.modal', function (e) {
 })
 
 function okModal() {
-  console.log('modal ok')
-  // removeAllModalListeners()
+  // получение списка отмеченных
+  const certList = $('#modal').find(':checkbox').map(function () {
+    return {
+      value: this.value,
+      text: $(this).siblings('label').html().trim(),
+      checked: this.checked
+    }
+  }).get()
+
+  // перенос списка отмеченных в пикер
+  $(`#${$('#modal').data().current_card}`).find('.cert-picker').find('.row').empty()
+  certList.filter((el) => el.checked).forEach((el)=> {
+    console.log(el)
+    $(`#${$('#modal').data().current_card}`).find('.cert-picker').find('.row').append(`
+      <span class="badge badge-pill badge-light">${el.text}</span>
+      `)
+  })
+  // перенос списка отмеченных в select
+  $(`#${$('#modal').data().current_card}`).find('option').each(function (idx) {
+    this.selected = certList[idx].checked
+  })
+  removeAllModalListeners()
+  $('#modal').modal('hide')
   
 }
 // console.log($('.cert-card'))
@@ -44,10 +58,9 @@ $('.cert-card').each( function() {
         `
       )
     })
-
+    // сохраняем id карты, которую мы меняем
+    $('#modal').data('current_card', $(e.target).closest(".cert-card").attr('id'))
     // навешивание кнопок 
-    // $('#modalCancelButton').on('click', cancelModal)
-    // $('#modalCrossButton').on('click', cancelModal)
     $('#modalOkButton').on('click', okModal)
 
     //открытие окна
