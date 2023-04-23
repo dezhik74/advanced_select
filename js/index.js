@@ -1,6 +1,17 @@
-function removeAllModalListeners() {
-  $('#modalOkButton').off('click', okModal)
+function makePicker(card, certList) {
+  card.find('.cert-picker-row').empty()
+  card.find('.cert-picker-row').append('<span>&nbsp;</span>')
+  certList.filter((el) => el.checked).forEach((el)=> {
+    card.find('.cert-picker-row').append(`
+      <span class="badge badge-pill badge-secondary mb-1 mt-1 mr-1">${el.text}</span>
+      `)
+  })
+
 }
+
+// function removeAllModalListeners() {
+//   $('#modalOkButton').off('click', okModal)
+// }
 
 $('#myModal').on('hidden.bs.modal', function (e) {
   okModal()
@@ -17,24 +28,17 @@ function okModal() {
   }).get()
 
   // перенос списка отмеченных в пикер
-  $(`#${$('#modal').data().current_card}`).find('.cert-picker').find('.row').empty()
-  certList.filter((el) => el.checked).forEach((el)=> {
-    console.log(el)
-    $(`#${$('#modal').data().current_card}`).find('.cert-picker').find('.row').append(`
-      <span class="badge badge-pill badge-light">${el.text}</span>
-      `)
-  })
+  current_card = $(`#${$('#modal').data().current_card}`)
+  makePicker(current_card, certList)
   // перенос списка отмеченных в select
   $(`#${$('#modal').data().current_card}`).find('option').each(function (idx) {
     this.selected = certList[idx].checked
   })
-  removeAllModalListeners()
+  // removeAllModalListeners()
   $('#modal').modal('hide')
   
 }
-// console.log($('.cert-card'))
 $('.cert-card').each( function() {
-  console.log('picker')
   $(this).on("click", (e) => {
     // заполнение модального окна
     const certList = $(e.target).closest(".cert-card").find('option').map( function () {
@@ -65,5 +69,19 @@ $('.cert-card').each( function() {
 
     //открытие окна
     $('#modal').modal()
+  })
+})
+
+$(document).ready(function() {
+  $('.cert-card').each(function () {
+    certList = $(this).find('option').map(function () {
+      return {
+        value: this.value,
+        text: this.text,
+        checked: this.selected,
+      }
+    }).get()
+    // console.log(certList)
+    makePicker($(this), certList)
   })
 })
